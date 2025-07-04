@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class ItemServiceImpl implements ItemService{
+public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
     private Long nextId = 1L;
@@ -49,7 +49,7 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public List<Item> searchItemsByText(String text) {
-        if (text.isEmpty()){
+        if (text.isEmpty()) {
             return List.of();
         }
         return itemStorage.searchItemsByText(text);
