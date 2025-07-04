@@ -49,7 +49,7 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public List<Item> searchItemsByText(String text) {
-        if (text.isEmpty()) {
+        if (text.isEmpty()){
             return List.of();
         }
         return itemStorage.searchItemsByText(text);
