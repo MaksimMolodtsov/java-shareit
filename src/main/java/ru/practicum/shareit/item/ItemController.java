@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
@@ -12,17 +12,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
-
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto createItem(@RequestHeader(USER_ID_HEADER) Long userId,
                               @Valid @RequestBody ItemDto itemDto) {
         Item item = itemService.createItem(userId, itemDto);
         return ItemMapper.toItemDto(item);
@@ -35,7 +32,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getItemsByOwnerId(@RequestHeader(USER_ID_HEADER) Long userId) {
         List<Item> itemsByOwnerId = itemService.getItemsByOwnerId(userId);
         return itemsByOwnerId.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
@@ -47,7 +44,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItemById(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto updateItemById(@RequestHeader(USER_ID_HEADER) Long userId,
                                   @PathVariable Long itemId,
                                   @RequestBody ItemDto itemDto) {
         Item item = itemService.updateItemById(userId, itemId, itemDto);

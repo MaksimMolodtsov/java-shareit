@@ -17,17 +17,13 @@ import java.util.Map;
 @Slf4j
 @ControllerAdvice
 public class FullExceptionHandler {
+    public static final LocalDateTime TIME_NOW = LocalDateTime.now();
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFoundHandle(RuntimeException e, HttpServletRequest req) {
         Map<String, String> textError = Map.of("Error", e.getMessage());
-        ErrorResponse res = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .message(textError)
-                .path(req.getRequestURI())
-                .build();
+        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(), textError, req.getRequestURI());
         log.error("Not found: {}", e.getMessage());
         return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
     }
@@ -35,13 +31,8 @@ public class FullExceptionHandler {
     @ExceptionHandler(ExistException.class)
     public ResponseEntity<ErrorResponse> existHandle(RuntimeException e, HttpServletRequest req) {
         Map<String, String> textError = Map.of("Error", e.getMessage());
-        ErrorResponse res = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.CONFLICT.value())
-                .error(HttpStatus.CONFLICT.getReasonPhrase())
-                .message(textError)
-                .path(req.getRequestURI())
-                .build();
+        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(), textError, req.getRequestURI());
         log.error("Exists error: {}", e.getMessage(), e);
         return new ResponseEntity<>(res, HttpStatus.CONFLICT);
     }
@@ -52,13 +43,8 @@ public class FullExceptionHandler {
         e.getConstraintViolations().forEach(violation ->
                 errors.put(violation.getPropertyPath().toString(), violation.getMessage())
         );
-        ErrorResponse res = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(errors)
-                .path(req.getRequestURI())
-                .build();
+        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(), errors, req.getRequestURI());
         log.error("Constraint violation error: {}", errors, e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
@@ -69,13 +55,8 @@ public class FullExceptionHandler {
         e.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
-        ErrorResponse res = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(errors)
-                .path(req.getRequestURI())
-                .build();
+        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(), errors, req.getRequestURI());
         log.error("Validation error: {}", errors, e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
@@ -83,27 +64,17 @@ public class FullExceptionHandler {
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ErrorResponse> requestHeaderExceptionHandle(MissingRequestHeaderException e, HttpServletRequest req) {
         Map<String, String> textError = Map.of("Error", e.getMessage());
-        ErrorResponse res = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(textError)
-                .path(req.getRequestURI())
-                .build();
+        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(), textError, req.getRequestURI());
         log.error("Missing request header: {}", e.getMessage(), e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> genericExceptionHandle(Exception e, HttpServletRequest req) {
         Map<String, String> textError = Map.of("Error", "Unexpected error");
-        ErrorResponse res = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message(textError)
-                .path(req.getRequestURI())
-                .build();
+        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), textError, req.getRequestURI());
         log.error("Unexpected error: {}", e.getMessage(), e);
         return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -113,4 +84,5 @@ public class FullExceptionHandler {
         log.error("Illegal argument error: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
 }

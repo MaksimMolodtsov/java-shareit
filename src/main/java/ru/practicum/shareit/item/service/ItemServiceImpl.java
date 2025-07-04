@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dal.ItemStorage;
@@ -15,16 +15,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
     private Long nextId = 1L;
-
-    @Autowired
-    public ItemServiceImpl(ItemStorage itemStorage, UserService userService) {
-        this.itemStorage = itemStorage;
-        this.userService = userService;
-    }
 
     @Override
     public Item createItem(Long userId, ItemDto itemDto) {
