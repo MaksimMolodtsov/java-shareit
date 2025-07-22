@@ -2,51 +2,67 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.ExistException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.dal.UserStorage;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.model.User;
 import lombok.extern.slf4j.Slf4j;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
-    private Long nextId = 1L;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public User createUser(UserDto userDto) {
-        userStorage.checkEmail(userDto.getEmail());
-        User user = UserMapper.toUser(userDto);
-        user.setId(nextId++);
+    @Transactional
+    public User createUser(UserCreateDto userCreateDto) {
+        this.checkEmail(userCreateDto.getEmail());
+        User user = userMapper.toUser(userCreateDto);
         log.info("Создан пользователь: {}", user);
-        return userStorage.createUser(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User getUserById(Long id) {
-        return userStorage.getUserById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с указанным id: {} не найден", id));
     }
 
     @Override
+    @Transactional
     public void deleteUserById(Long id) {
         getUserById(id);
-        userStorage.deleteUserById(id);
+        userRepository.deleteById(id);
+        log.info("Удален пользователь с id: {}", id);
     }
 
     @Override
-    public User updateUserById(Long id, UserDto userDto) {
+    @Transactional
+    public User updateUserById(Long id, UserUpdateDto userUpdateDto) {
         User user = getUserById(id);
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
+        if (userUpdateDto.getName() != null) {
+            user.setName(userUpdateDto.getName());
         }
-        if (userDto.getEmail() != null) {
-            userStorage.checkEmail(userDto.getEmail());
-            user.setEmail(userDto.getEmail());
+        if (userUpdateDto.getEmail() != null) {
+            this.checkEmail(userUpdateDto.getEmail());
+            user.setEmail(userUpdateDto.getEmail());
         }
-        return userStorage.updateUserById(user);
+        log.info("Обновлен пользователь: {}", user);
+        return userRepository.save(user);
     }
+
+    @Override
+    public void checkEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new ExistException("Указан существующий email: " + email);
+        }
+    }
+
 }
