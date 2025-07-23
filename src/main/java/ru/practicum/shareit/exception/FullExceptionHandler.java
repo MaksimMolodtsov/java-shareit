@@ -93,5 +93,4 @@ public class FullExceptionHandler {
         log.error("Not available or not valid: {}", e.getMessage());
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
-
 }
