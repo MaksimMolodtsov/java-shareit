@@ -85,21 +85,12 @@ public class FullExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NotAvailableException.class)
+    @ExceptionHandler({NotAvailableException.class, NotValidException.class})
     public ResponseEntity<ErrorResponse> handleAvailable(RuntimeException e, HttpServletRequest req) {
         Map<String, String> textError = Map.of("Error", e.getMessage());
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), textError, req.getRequestURI());
-        log.error("Not available: {}", e.getMessage());
-        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValid(RuntimeException e, HttpServletRequest req) {
-        Map<String, String> textError = Map.of("Error", e.getMessage());
-        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(), textError, req.getRequestURI());
-        log.error("NotValid exception: {}", e.getMessage());
+        log.error("Not available or not valid: {}", e.getMessage());
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 

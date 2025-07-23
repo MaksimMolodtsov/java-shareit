@@ -68,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
         } else {
             booking.setStatus(BookingStatus.REJECTED);
         }
-        return bookingRepository.save(booking);
+        return booking;
     }
 
     @Override
