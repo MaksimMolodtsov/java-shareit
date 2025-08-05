@@ -16,10 +16,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 public class BookingController {
-
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final BookingService bookingService;
     private final BookingMapper bookingMapper;
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
     public BookingDto createBooking(@RequestHeader(USER_ID_HEADER) Long userId,
@@ -30,8 +29,8 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingDto updateBookingById(@RequestHeader(USER_ID_HEADER) Long userId,
-                                     @PathVariable Long bookingId,
-                                     @RequestParam Boolean approved) {
+                                        @PathVariable Long bookingId,
+                                        @RequestParam Boolean approved) {
         Booking booking = bookingService.updateBookingById(userId, bookingId, approved);
         return bookingMapper.toBookingDto(booking);
     }

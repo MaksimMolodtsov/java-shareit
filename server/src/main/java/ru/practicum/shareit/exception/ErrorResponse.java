@@ -8,7 +8,6 @@ import java.util.Map;
 
 @Data
 @Builder
-
 public class ErrorResponse {
     private LocalDateTime timestamp;
     private int status;

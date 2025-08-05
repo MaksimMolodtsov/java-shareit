@@ -28,7 +28,6 @@ public class FullExceptionHandler {
                 e.getName(), e.getValue());
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), Map.of("error", textError), req.getRequestURI());
-        log.error("Type mismatch error: {}", textError, e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
@@ -40,7 +39,6 @@ public class FullExceptionHandler {
         );
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), errors, req.getRequestURI());
-        log.error("Constraint violation error: {}", errors, e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
@@ -52,7 +50,6 @@ public class FullExceptionHandler {
         );
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), errors, req.getRequestURI());
-        log.error("Validation error: {}", errors, e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
@@ -61,7 +58,6 @@ public class FullExceptionHandler {
         Map<String, String> textError = Map.of("Error", e.getMessage());
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), textError, req.getRequestURI());
-        log.error("Missing request header: {}", e.getMessage(), e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
@@ -70,7 +66,6 @@ public class FullExceptionHandler {
         Map<String, String> textError = Map.of("Error", "Unexpected error");
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), textError, req.getRequestURI());
-        log.error("Unexpected error: {}", e.getMessage(), e);
         return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -80,7 +75,6 @@ public class FullExceptionHandler {
         String textError = String.format("Required parameter '%s' is not present", e.getParameterName());
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), Map.of("error", textError), req.getRequestURI());
-        log.error("Missing parameter error: {}", textError, e);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 }

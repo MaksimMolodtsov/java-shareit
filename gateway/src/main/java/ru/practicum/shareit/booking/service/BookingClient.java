@@ -30,12 +30,11 @@ public class BookingClient extends BaseClient {
         return post("", userId, requestDto);
     }
 
-    public ResponseEntity<Object> updateBookingById(Long userId, Long bookingId, boolean approved) {
+    public ResponseEntity<Object> updateBookingById(long userId, Long bookingId, boolean approved) {
         String path = UriComponentsBuilder.fromPath("/{bookingId}")
                 .queryParam("approved", approved)
                 .buildAndExpand(bookingId)
                 .toUriString();
-
         return patch(path, userId);
     }
 

@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
@@ -26,7 +27,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public ResponseEntity<Object> updateBookingById(@RequestHeader(USER_ID_HEADER) @Positive Long userId,
+    public ResponseEntity<Object> updateBookingById(@RequestHeader(USER_ID_HEADER) @Positive long userId,
                                      @PathVariable @Positive Long bookingId,
                                      @RequestParam Boolean approved) {
         return bookingClient.updateBookingById(userId, bookingId, approved);

@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class ItemRequestCreateDto {
 
-    @NotBlank(message = "Описание запроса не может быть пустым")
+    @NotBlank
     private String description;
 
 }
