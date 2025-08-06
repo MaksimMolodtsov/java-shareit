@@ -1,4 +1,5 @@
 services:
+
   gateway:
     build: gateway
     image: shareit-gateway
@@ -20,18 +21,19 @@ services:
       - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
-      - SPRING_DATASOURCE_USERNAME=shareit
-      - SPRING_DATASOURCE_PASSWORD=shareit
+      - SPRING_DATASOURCE_USERNAME=dbuser
+      - SPRING_DATASOURCE_PASSWORD=12345
 
   db:
     image: postgres:16.1
-    container_name: postgres
     ports:
-      - "6541:5432"
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_PASSWORD=shareit
-      - POSTGRES_USER=shareit
       - POSTGRES_DB=shareit
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=12345
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
