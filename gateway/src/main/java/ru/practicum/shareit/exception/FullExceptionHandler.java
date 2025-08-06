@@ -70,7 +70,7 @@ public class FullExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ErrorResponse> missingServletRequestParameterHandle(
+    public ResponseEntity <ErrorResponse> missingServletRequestParameterHandle(
             MissingServletRequestParameterException e, HttpServletRequest req) {
         String textError = String.format("Required parameter '%s' is not present", e.getParameterName());
         ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
