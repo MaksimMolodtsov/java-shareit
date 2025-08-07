@@ -201,6 +201,21 @@ class BookingControllerTest extends BasicControllerTest {
     }
 
     @Test
+    void getBookingsByUserPastTimeTest() throws Exception {
+        User owner = createUser();
+        MultiValueMap<String, String> ownerHeaders = createHeaders(USER_ID_HEADER, owner.getId().toString());
+        Item item = createItem(ownerHeaders, true);
+        User booker = createUser();
+        MultiValueMap<String, String> bookerHeaders = createHeaders(USER_ID_HEADER, booker.getId().toString());
+        LocalDateTime start = LocalDateTime.now().plusSeconds(1);
+        LocalDateTime end = LocalDateTime.now().plusSeconds(3);
+        createBooking(bookerHeaders, item.getId(), start, end);
+        performRequest(GET, "/bookings?state=" + PAST, bookerHeaders)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
     void getBookingsByUserWaitingTest() throws Exception {
         User owner = createUser();
         MultiValueMap<String, String> ownerHeaders = createHeaders(USER_ID_HEADER, owner.getId().toString());
