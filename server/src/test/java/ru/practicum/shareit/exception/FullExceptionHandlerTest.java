@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -52,7 +51,6 @@ class FullExceptionHandlerTest {
         assertEquals("/test/endpoint", body.getPath());
         assertTrue(body.getTimestamp().isBefore(LocalDateTime.now().plusSeconds(1)) ||
                 body.getTimestamp().isEqual(LocalDateTime.now().plusSeconds(1)));
-        Map<String, String> message = body.getMessage();
     }
 
     @Test
@@ -64,7 +62,6 @@ class FullExceptionHandlerTest {
         assertNotNull(response.getBody());
         ErrorResponse body = response.getBody();
         assertEquals("/test/endpoint", body.getPath());
-        Map<String, String> message = body.getMessage();
     }
 
     @Test
@@ -76,7 +73,6 @@ class FullExceptionHandlerTest {
         assertNotNull(response.getBody());
         ErrorResponse body = response.getBody();
         assertEquals("/test/endpoint", body.getPath());
-        Map<String, String> message = body.getMessage();
     }
 
     @Test
@@ -90,7 +86,6 @@ class FullExceptionHandlerTest {
         assertNotNull(response.getBody());
         ErrorResponse body = response.getBody();
         assertEquals("/test/endpoint", body.getPath());
-        Map<String, String> message = body.getMessage();
     }
 
     @Test
@@ -100,7 +95,15 @@ class FullExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleAvailable(e, request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
-        Map<String, String> message = response.getBody().getMessage();
+    }
+
+    @Test
+    void validationHandleShouldReturnBadRequest() {
+        String errorMessage = "Not available or not valid";
+        NotValidException e = new NotValidException(errorMessage);
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleAvailable(e, request);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
 }
