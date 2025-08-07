@@ -4,11 +4,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import ru.practicum.shareit.BasicControllerTest;
 
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.utils.RandomUtils;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -193,6 +195,26 @@ class ItemControllerTest extends BasicControllerTest {
                 .andExpect(jsonPath("$.description").value(itemDto.getDescription()))
                 .andExpect(jsonPath("$.available").value(itemDto.getAvailable()))
                 .andExpect(jsonPath("$.requestId").doesNotExist());
+    }
+
+    @Test
+    void createCommentTest() throws Exception {
+        User owner = createUser();
+        MultiValueMap<String, String> ownerHeaders = createHeaders(USER_ID_HEADER, owner.getId().toString());
+        Item item = createItem(ownerHeaders, true);
+        User booker = createUser();
+        MultiValueMap<String, String> bookerHeaders = createHeaders(USER_ID_HEADER, booker.getId().toString());
+        LocalDateTime start = LocalDateTime.now().plusSeconds(2);
+        LocalDateTime end = LocalDateTime.now().plusSeconds(6);
+        Booking booking = createBooking(bookerHeaders, item.getId(), start, end);
+        performRequest(PATCH, "/bookings/" + booking.getId() + "?approved=true", ownerHeaders)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+        Thread.sleep(10000);
+        String commentText = "Comment";
+        performRequest(POST, "/items/" + item.getId() + "/comment", createJson(Map.of("text", commentText)), bookerHeaders)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.text").value(commentText));
     }
 
 }
