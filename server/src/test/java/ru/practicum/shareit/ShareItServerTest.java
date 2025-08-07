@@ -23,4 +23,9 @@ class ShareItServerTest {
         assertNotNull(context.getBean(ShareItServer.class));
     }
 
+    @Test
+    void main() {
+        ShareItServer.main(new String[]{});
+    }
+
 }
