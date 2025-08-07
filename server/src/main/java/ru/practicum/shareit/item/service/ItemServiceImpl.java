@@ -32,7 +32,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
     private final BookingService bookingService;
     private final CommentRepository commentRepository;
-    private final ItemRequestService itemRequestService;
 
     @Autowired
     public ItemServiceImpl(ItemRepository itemRepository, UserService userService, CommentRepository commentRepository,
@@ -42,7 +41,6 @@ public class ItemServiceImpl implements ItemService {
         this.commentRepository = commentRepository;
         this.bookingService = bookingService;
         this.itemMapper = itemMapper;
-        this.itemRequestService = itemRequestService;
     }
 
     @Override

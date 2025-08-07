@@ -18,10 +18,6 @@ public interface BookingService {
 
     List<Booking> getBookingsForOwner(Long userId, BookingState state);
 
-    Booking getLastBooking(Long itemId);
-
-    Booking getNextBooking(Long itemId);
-
     boolean existsByBookerIdAndItemId(Long bookerId, Long itemId);
 
 }

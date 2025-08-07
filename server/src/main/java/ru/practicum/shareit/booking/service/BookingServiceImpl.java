@@ -121,16 +121,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getLastBooking(Long itemId) {
-        return bookingRepository.findByItemIdAndEndIsBeforeOrderByEndDesc(itemId, LocalDateTime.now());
-    }
-
-    @Override
-    public Booking getNextBooking(Long itemId) {
-        return bookingRepository.findByItemIdAndStartIsAfterOrderByStartAsc(itemId, LocalDateTime.now());
-    }
-
-    @Override
     public boolean existsByBookerIdAndItemId(Long bookerId, Long itemId) {
         return bookingRepository.existsByUser_IdAndItemIdAndEndBefore(bookerId, itemId, LocalDateTime.now());
     }
