@@ -36,18 +36,6 @@ public class FullExceptionHandler {
         return new ResponseEntity<>(res, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> validationHandle(MethodArgumentNotValidException e, HttpServletRequest req) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
-        ErrorResponse res = new ErrorResponse(TIME_NOW, HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(), errors, req.getRequestURI());
-        log.error("Validation error: {}", errors, e);
-        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ErrorResponse> requestHeaderExceptionHandle(MissingRequestHeaderException e, HttpServletRequest req) {
         Map<String, String> textError = Map.of("Error", e.getMessage());

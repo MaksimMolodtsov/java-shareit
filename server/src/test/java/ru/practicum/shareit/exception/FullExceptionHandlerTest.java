@@ -9,6 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 
 import java.time.LocalDateTime;
@@ -92,15 +94,6 @@ class FullExceptionHandlerTest {
     void handleAvailableShouldReturnBadRequest() {
         String errorMessage = "Not available";
         NotAvailableException e = new NotAvailableException(errorMessage);
-        ResponseEntity<ErrorResponse> response = exceptionHandler.handleAvailable(e, request);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertNotNull(response.getBody());
-    }
-
-    @Test
-    void validationHandleShouldReturnBadRequest() {
-        String errorMessage = "Not available or not valid";
-        NotValidException e = new NotValidException(errorMessage);
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleAvailable(e, request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
